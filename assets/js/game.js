@@ -70,9 +70,14 @@ function fight() {
         else if (promptFight == "SKIP") {
             var skip = window.confirm("If you skip this round  you will lose 2 dollars. You currently have $" + playerMoney + ". Do you still want to skip? YES or NO?");
             if (skip) {
-                window.alert("You have skiped the round and lost 2 dollars");
-                playerMoney = playerMoney - 2;
-                store_or_heal();
+                if ((playerMoney - 2) < 0) {
+                    window.alert("You do not have enough money to skip you must attack.")
+                }
+                else {
+                    window.alert("You have skiped the round and lost 2 dollars");
+                    playerMoney = playerMoney - 2;
+                    store_or_heal();
+                }
             }
 
             else {
