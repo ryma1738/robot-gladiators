@@ -1,15 +1,13 @@
-window.alert("Welcome to Robot Gladiators!");
-var playerName = window.prompt("What is your robot's name?");
+// Made By Ryan Jepson
+
 var playerHealth = 100;
 var playerBaseHealth = 100;
-var playerAttack = 10;
+var playerAttack = 7;
 var playerMoney = 10;
 
-console.log(playerName, playerHealth, playerAttack);
-
 var enemysName = ["Roborto", "Galotron", "Exo-bot", "X-69420", "Ultron The Destroyer"];
-var enemysHealth = [50, 75, 90, 110, 150];
-var enemysAttack = [12, 14, 17, 20, 30];
+var enemysHealth = [randomBetween(10, 45), randBetween(10, 65), randomBetween(15, 82), randomBetween(15, 102), randomBetween(20, 140)];
+var enemysAttack = [7, 10, 14, 18, 25];
 var enemysReward = [10, 20, 30, 40, 50];
 var indexEnemy = 0;
 var enemyName = enemysName[indexEnemy];
@@ -19,11 +17,36 @@ var newRound = true;
 var heal = true;
 var hasFought = 0;
 var end_Game = false;
+var start_Game = true;
+var finish = false;
+    
+function start_game() {
+    window.alert("Welcome to Robot Gladiators!");
+    var playerName = window.prompt("What is your robot's name?");
+    
+    return playerName;
+}
 
-function fight() {
+function end_game() {
+    window.alert("Your final stats were: Health: " + playerHealth);
+    var again = window.confirm("Thank you for playing! Would you like to play again?");
+    if (again) {
+        return start_Game = true;
+    }
+    else {
+        return end_Game = true;
+    }
+}
+
+function randomBetween(a, b) {
+ var value = Math.floor(Math.random() * a + b);
+ return value;
+}
+
+function fight(playerName) {
     if (indexEnemy === 5) {
         window.alert("Congragulations you defeated all the enemy robots! YOU WIN!");
-        return end_Game = true;
+        return finish = true;
     }
     else if (newRound) {
         window.alert("Enemy " + enemyName + " has entered the battle! They have " + enemyHealth + " total health and " + enemyAttack + " attack.");
@@ -35,7 +58,7 @@ function fight() {
         promptFight = promptFight.toUpperCase().trim();
         if (promptFight === "FIGHT") {
 
-            enemyHealth = enemyHealth - playerAttack;
+            enemyHealth = enemyHealth - randomBetween(7 ,playerAttack);
 
             if (enemyHealth <= 0) {
                 window.alert(playerName + " killed " + enemyName + "!");
@@ -51,12 +74,12 @@ function fight() {
             else {
                 window.alert(playerName + " attacked " + enemyName +". " + enemyName + " now has " + enemyHealth + " health left. You gained $" + (enemysReward[indexEnemy] / 10));
                 playerMoney = playerMoney + (enemysReward[indexEnemy] / 10);
-                playerHealth = playerHealth - enemyAttack;
+                playerHealth = playerHealth - randomBetween(7, enemyAttack);
 
                 if (playerHealth <= 0) {
                     window.alert(enemyName + " killed " + playerName + "!");
                     window.alert("Game Over");
-                    return end_Game = true;
+                    return finish = true;
                 }
         
                 else {
@@ -196,18 +219,36 @@ function confirmPurchase(dollars, option) {
     return purchase;
 }
 
-function endGame() {
-    end_Game = true;
-    return end_game;
-}
-
 while (true) {
-    if (end_Game) {
-        break;
+    if (finish) {
+        end_game();
+        if (end_Game){
+            break;
+        } 
+        else {
+            finish = false;
+        }
     }
+
+    else if (start_Game) {
+        var playerName = start_game();
+        start_Game = false;
+        playerBaseHealth = 100;
+        playerAttack = 10;
+        playerMoney = 10;
+
+        indexEnemy = 0;
+        enemyName = enemysName[indexEnemy];
+        enemyHealth = enemysHealth[indexEnemy];
+        enemyAttack = enemysAttack[indexEnemy];
+        newRound = true;
+        heal = true;
+        hasFought = 0;
+
+    }
+
     else {
-        fight();
+        fight(playerName);
     }
     
 }
-window.alert("Thank you for playing! Refresh the page to play again.");
