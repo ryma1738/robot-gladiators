@@ -4,9 +4,10 @@ var playerHealth = 100;
 var playerBaseHealth = 100;
 var playerAttack = 7;
 var playerMoney = 10;
+var playerTotalDamage = 0;
 
 var enemysName = ["Roborto", "Galotron", "Exo-bot", "X-69420", "Ultron The Destroyer"];
-var enemysHealth = [randomBetween(10, 45), randBetween(10, 65), randomBetween(15, 82), randomBetween(15, 102), randomBetween(20, 140)];
+var enemysHealth = [randomBetween(10, 45), randomBetween(10, 65), randomBetween(15, 82), randomBetween(15, 102), randomBetween(20, 140)];
 var enemysAttack = [7, 10, 14, 18, 25];
 var enemysReward = [10, 20, 30, 40, 50];
 var indexEnemy = 0;
@@ -20,6 +21,11 @@ var end_Game = false;
 var start_Game = true;
 var finish = false;
     
+function randomBetween(a, b) {
+    var value = Math.floor(Math.random() * a + b);
+    return value;
+   }
+
 function start_game() {
     window.alert("Welcome to Robot Gladiators!");
     var playerName = window.prompt("What is your robot's name?");
@@ -28,7 +34,7 @@ function start_game() {
 }
 
 function end_game() {
-    window.alert("Your final stats were: Health: " + playerHealth);
+    window.alert("Your final stats were: Health: " + playerHealth + " Base Attack: " + (playerAttack + 3) + " Total Money: " + playerMoney + " Total Attack Damage: " + playerTotalDamage + ".");
     var again = window.confirm("Thank you for playing! Would you like to play again?");
     if (again) {
         return start_Game = true;
@@ -38,79 +44,77 @@ function end_game() {
     }
 }
 
-function randomBetween(a, b) {
- var value = Math.floor(Math.random() * a + b);
- return value;
-}
-
 function fight(playerName) {
     if (indexEnemy === 5) {
         window.alert("Congragulations you defeated all the enemy robots! YOU WIN!");
         return finish = true;
     }
     else if (newRound) {
-        window.alert("Enemy " + enemyName + " has entered the battle! They have " + enemyHealth + " total health and " + enemyAttack + " attack.");
+        window.alert("Enemy " + enemyName + " has entered the battle! They have " + enemyHealth + " total health and " + (enemyAttack + 3) + " base attack.");
         newRound = false;
-        window.alert("Your health is: " + playerHealth + " and your attack is: " + playerAttack + " and you have: " + playerMoney + " dollars.");
+        window.alert("Your health is: " + playerHealth + " and your base attack is: " + (playerAttack + 3) + " and you have: " + playerMoney + " dollars.");
     }
+    var damagePlayer = randomBetween(7, playerAttack);
+    playerTotalDamage = playerTotalDamage + damagePlayer;
+    enemyHealth = enemyHealth - damagePlayer;
+
+    if (enemyHealth <= 0) {
+        window.alert(playerName + " killed " + enemyName + "!");
+        window.alert(playerName + " Won and gained " + enemysReward[indexEnemy] + " dollars!");
+        playerMoney = playerMoney + enemysReward[indexEnemy];
+        indexEnemy = indexEnemy + 1;
+        enemyName = enemysName[indexEnemy];
+        enemyAttack = enemysAttack[indexEnemy];
+        enemyHealth = enemysHealth[indexEnemy];
+        newRound = true;
+    }
+
     else {
-        var promptFight = window.prompt("Would you like to FIGHT or SKIP this round? Enter 'FIGHT' or 'SKIP' to chose.");
-        promptFight = promptFight.toUpperCase().trim();
-        if (promptFight === "FIGHT") {
+        window.alert(playerName + " attacked " + enemyName + " and delt " + damagePlayer + " damage. " + enemyName + " now has " + enemyHealth + " health left. You gained $" + (enemysReward[indexEnemy] / 10));
+        playerMoney = playerMoney + (enemysReward[indexEnemy] / 10);
+        var damageEnemy = randomBetween(7, enemyAttack);
+        playerHealth = playerHealth - damageEnemy;
 
-            enemyHealth = enemyHealth - randomBetween(7 ,playerAttack);
-
-            if (enemyHealth <= 0) {
-                window.alert(playerName + " killed " + enemyName + "!");
-                window.alert(playerName + " Won and gained " + enemysReward[indexEnemy] + " dollars!");
-                playerMoney = playerMoney + enemysReward[indexEnemy];
-                indexEnemy = indexEnemy + 1;
-                enemyName = enemysName[indexEnemy];
-                enemyAttack = enemysAttack[indexEnemy];
-                enemyHealth = enemysHealth[indexEnemy];
-                newRound = true;
-            }
-
-            else {
-                window.alert(playerName + " attacked " + enemyName +". " + enemyName + " now has " + enemyHealth + " health left. You gained $" + (enemysReward[indexEnemy] / 10));
-                playerMoney = playerMoney + (enemysReward[indexEnemy] / 10);
-                playerHealth = playerHealth - randomBetween(7, enemyAttack);
-
-                if (playerHealth <= 0) {
-                    window.alert(enemyName + " killed " + playerName + "!");
-                    window.alert("Game Over");
-                    return finish = true;
-                }
-        
-                else {
-                    window.alert(enemyName + " attacked " + playerName +". " + playerName + " now has " + playerHealth + " health left.");
-                }
-            }
-            hasFought = hasFought + 1;
-
-        }
-
-        else if (promptFight == "SKIP") {
-            var skip = window.confirm("If you skip this round  you will lose 2 dollars. You currently have $" + playerMoney + ". Do you still want to skip? YES or NO?");
-            if (skip) {
-                if ((playerMoney - 2) < 0) {
-                    window.alert("You do not have enough money to skip you must attack.")
-                }
-                else {
-                    window.alert("You have skiped the round and lost 2 dollars");
-                    playerMoney = playerMoney - 2;
-                    store_or_heal();
-                }
-            }
-
-            else {
-                fight();
-            }
+        if (playerHealth <= 0) {
+            window.alert(enemyName + " killed " + playerName + "!");
+            window.alert("Game Over");
+            return finish = true;
         }
 
         else {
-            fight();
+            window.alert(enemyName + " attacked " + playerName + " and delt " + damageEnemy + " damage. " +  playerName + " now has " + playerHealth + " health left.");
         }
+    }
+    hasFought = hasFought + 1;
+}
+
+function skip() {
+    var promptFight = window.prompt("Would you like to FIGHT or SKIP this round? Enter 'FIGHT' or 'SKIP' to chose.");
+        promptFight = promptFight.toUpperCase().trim();
+    if (promptFight === "SKIP") {
+        var skip = window.confirm("If you skip this round  you will lose 2 dollars. You currently have $" + playerMoney + ". Do you still want to skip? YES or NO?");
+        if (skip) {
+            if ((playerMoney - 2) < 0) {
+                window.alert("You do not have enough money to skip you must attack.")
+                return "Fight";
+            }
+            else {
+                window.alert("You have skiped the round and lost 2 dollars");
+                playerMoney = playerMoney - 2;
+                return "Store";
+            }
+        }
+        else {
+            return "Fight";
+        }
+    }
+
+    else if (promptFight === "FIGHT") {
+        return "Fight";
+    }
+
+    else {
+        return "Error";
     }
 }
 
@@ -167,7 +171,7 @@ function store_or_heal() {
                         else {
                             playerMoney = playerMoney - 15;
                             playerAttack = playerAttack + 5;
-                            window.alert("Your attack damage is now " + playerAttack + " and you now have " + playerMoney + " dollars left.");
+                            window.alert("Your base attack damage is now " + (playerAttack + 3)+ " and you now have " + playerMoney + " dollars left.");
                         }
                     } 
                 }
@@ -205,6 +209,7 @@ function store_or_heal() {
         }
 
         else if (store === "EXIT") {
+            fight(playerName);
             break;
         }
 
@@ -223,6 +228,7 @@ while (true) {
     if (finish) {
         end_game();
         if (end_Game){
+            window.alert("Thank you for playing Robot Gladiators!");
             break;
         } 
         else {
@@ -233,8 +239,9 @@ while (true) {
     else if (start_Game) {
         var playerName = start_game();
         start_Game = false;
+        playerHealth = 100;
         playerBaseHealth = 100;
-        playerAttack = 10;
+        playerAttack = 7;
         playerMoney = 10;
 
         indexEnemy = 0;
@@ -248,7 +255,16 @@ while (true) {
     }
 
     else {
-        fight(playerName);
+        var fightOrFlight = skip();
+        if (fightOrFlight === "Fight") {
+            fight(playerName);
+        }
+        else if (fightOrFlight === "Store") {
+            store_or_heal();
+        }
+        else {
+            continue;
+        }
     }
     
 }
