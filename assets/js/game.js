@@ -120,7 +120,7 @@ function skip() {
 
 function store_or_heal() {
     while (true) {
-        var store = window.prompt("Would you like to heal your self by 25% for free or buy items at the shop? Enter 'HEAL' or 'SHOP' or 'EXIT' (To return to battling).");
+        var store = window.prompt("Would you like to heal your self by 25% of your BASE HEALTH for free or buy items at the shop? Enter 'HEAL' or 'SHOP' or 'EXIT' (To return to battling).");
         store = store.toUpperCase().trim();
         if (store === "HEAL") {
             if (hasFought >= 2) {
