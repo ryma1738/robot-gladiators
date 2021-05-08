@@ -1,6 +1,6 @@
 # robot-gladiators
 
-##Description
+## Description
 
-##Website
+## Website
 https://ryma1738.github.io/robot-gladiators/
