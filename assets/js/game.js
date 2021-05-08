@@ -56,7 +56,7 @@ function fight(playerName) {
     }
     var damagePlayer = randomBetween(7, playerAttack);
     playerTotalDamage = playerTotalDamage + damagePlayer;
-    enemyHealth = enemyHealth - damagePlayer;
+    enemyHealth = Math.max(0, enemyHealth - damagePlayer);
 
     if (enemyHealth <= 0) {
         window.alert(playerName + " killed " + enemyName + "!");
@@ -73,7 +73,7 @@ function fight(playerName) {
         window.alert(playerName + " attacked " + enemyName + " and delt " + damagePlayer + " damage. " + enemyName + " now has " + enemyHealth + " health left. You gained $" + (enemysReward[indexEnemy] / 10));
         playerMoney = playerMoney + (enemysReward[indexEnemy] / 10);
         var damageEnemy = randomBetween(7, enemyAttack);
-        playerHealth = playerHealth - damageEnemy;
+        playerHealth = Math.max(0, playerHealth - damageEnemy);
 
         if (playerHealth <= 0) {
             window.alert(enemyName + " killed " + playerName + "!");
