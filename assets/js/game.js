@@ -54,7 +54,7 @@ function start_game() {
         if (player.name === "") {
             window.alert("Invalid name, can not be blank");
         }
-        else if (player.name === "null") {
+        else if (player.name === null) {
             window.alert("You must enter a player name!");
         }
         else {
@@ -85,37 +85,50 @@ function fight() {
         newRound = false;
         window.alert("Your health is: " + player.health + " and your base attack is: " + (player.attack + 3) + " and you have: " + player.money + " dollars.");
     }
-    var damagePlayer = randomBetween(7, player.attack);
-    player.totalDamage = player.totalDamage + damagePlayer;
-    enemyHealth = Math.max(0, enemyHealth - damagePlayer);
 
-    if (enemyHealth <= 0) {
-        window.alert(player.name + " killed " + enemyName + "!");
-        window.alert(player.name + " Won and gained " + enemysReward[indexEnemy] + " dollars!");
-        player.money = player.money + enemysReward[indexEnemy];
-        indexEnemy = indexEnemy + 1;
-        enemyName = enemysName[indexEnemy];
-        enemyAttack = enemysAttack[indexEnemy];
-        enemyHealth = enemysHealth[indexEnemy];
-        newRound = true;
-    }
+    var fightOrder = randomBetween(2, 0);
+    console.log(fightOrder);
 
-    else {
-        window.alert(player.name + " attacked " + enemyName + " and delt " + damagePlayer + " damage. " + enemyName + " now has " + enemyHealth + " health left. You gained $" + (enemysReward[indexEnemy] / 10));
-        player.money = player.money + (enemysReward[indexEnemy] / 10);
-        var damageEnemy = randomBetween(7, enemyAttack);
-        player.health = Math.max(0, player.health - damageEnemy);
+    for (var i = 0; i < 2; i++) {
+        if (fightOrder === 0) {
+            var damagePlayer = randomBetween(7, player.attack);
+            player.totalDamage = player.totalDamage + damagePlayer;
+            enemyHealth = Math.max(0, enemyHealth - damagePlayer);
 
-        if (player.health <= 0) {
-            window.alert(enemyName + " killed " + player.name + "!");
-            window.alert("Game Over");
-            return finish = true;
+            if (enemyHealth <= 0) {
+                window.alert(player.name + " killed " + enemyName + "!");
+                window.alert(player.name + " Won and gained " + enemysReward[indexEnemy] + " dollars!");
+                player.money = player.money + enemysReward[indexEnemy];
+                indexEnemy = indexEnemy + 1;
+                enemyName = enemysName[indexEnemy];
+                enemyAttack = enemysAttack[indexEnemy];
+                enemyHealth = enemysHealth[indexEnemy];
+                newRound = true;
+            }
+
+            else {
+                window.alert(player.name + " attacked " + enemyName + " and delt " + damagePlayer + " damage. " + enemyName + " now has " + enemyHealth + " health left. You gained $" + (enemysReward[indexEnemy] / 10));
+                player.money = player.money + (enemysReward[indexEnemy] / 10);
+            }
+            fightOrder = 1;
+        }    
+        else if (fightOrder === 1) {
+                var damageEnemy = randomBetween(7, enemyAttack);
+                player.health = Math.max(0, player.health - damageEnemy);
+
+                if (player.health <= 0) {
+                    window.alert(enemyName + " killed " + player.name + "!");
+                    window.alert("Game Over");
+                    return finish = true;
+                }
+
+                else {
+                    window.alert(enemyName + " attacked " + player.name + " and delt " + damageEnemy + " damage. " +  player.name + " now has " + player.health + " health left.");
+                }
+                fightOrder = 0;
         }
-
-        else {
-            window.alert(enemyName + " attacked " + player.name + " and delt " + damageEnemy + " damage. " +  player.name + " now has " + player.health + " health left.");
-        }
     }
+    
     hasFought = hasFought + 1;
 }
 
