@@ -1,10 +1,31 @@
 // Made By Ryan Jepson
 
-var playerHealth = 100;
-var playerBaseHealth = 100;
-var playerAttack = 7;
-var playerMoney = 10;
-var playerTotalDamage = 0;
+var player = {
+    name: "",
+    health: 100,
+    baseHealth: 100,
+    attack: 7,
+    money: 10,
+    totalDamage: 0,
+    reset: function() {
+        this.health = 100;
+        this.baseHealth = 100;
+        this.money = 10;
+        this.attack = 7;
+    },
+    attackPlus: function() {
+        this.money -= 15;
+        this.attack += 5;
+    },
+    baseHealthPlus: function() {
+        this.money -= 20;
+        this.baseHealth += 20;
+    },
+    heal: function() {
+        this.money -= 10;
+        this.health += 20;
+    }
+}
 
 var enemysName = ["Roborto", "Galotron", "Exo-bot", "X-69420", "Ultron The Destroyer"];
 var enemysHealth = [randomBetween(10, 45), randomBetween(10, 65), randomBetween(15, 82), randomBetween(15, 102), randomBetween(20, 140)];
@@ -28,13 +49,13 @@ function randomBetween(a, b) {
 
 function start_game() {
     window.alert("Welcome to Robot Gladiators!");
-    var playerName = window.prompt("What is your robot's name?");
+    player.name = window.prompt("What is your robot's name?");
     
-    return playerName;
+    return player.name;
 }
 
 function end_game() {
-    window.alert("Your final stats were: Health: " + playerHealth + " Base Attack: " + (playerAttack + 3) + " Total Money: " + playerMoney + " Total Attack Damage: " + playerTotalDamage + ".");
+    window.alert("Your final stats were: Health: " + player.health + " Base Attack: " + (player.attack + 3) + " Total Money: " + player.money + " Total Attack Damage: " + player.totalDamage + ".");
     var again = window.confirm("Thank you for playing! Would you like to play again?");
     if (again) {
         return start_Game = true;
@@ -44,7 +65,7 @@ function end_game() {
     }
 }
 
-function fight(playerName) {
+function fight() {
     if (indexEnemy === 5) {
         window.alert("Congragulations you defeated all the enemy robots! YOU WIN!");
         return finish = true;
@@ -52,16 +73,16 @@ function fight(playerName) {
     else if (newRound) {
         window.alert("Enemy " + enemyName + " has entered the battle! They have " + enemyHealth + " total health and " + (enemyAttack + 3) + " base attack.");
         newRound = false;
-        window.alert("Your health is: " + playerHealth + " and your base attack is: " + (playerAttack + 3) + " and you have: " + playerMoney + " dollars.");
+        window.alert("Your health is: " + player.health + " and your base attack is: " + (player.attack + 3) + " and you have: " + player.money + " dollars.");
     }
-    var damagePlayer = randomBetween(7, playerAttack);
-    playerTotalDamage = playerTotalDamage + damagePlayer;
+    var damagePlayer = randomBetween(7, player.attack);
+    player.totalDamage = player.totalDamage + damagePlayer;
     enemyHealth = Math.max(0, enemyHealth - damagePlayer);
 
     if (enemyHealth <= 0) {
-        window.alert(playerName + " killed " + enemyName + "!");
-        window.alert(playerName + " Won and gained " + enemysReward[indexEnemy] + " dollars!");
-        playerMoney = playerMoney + enemysReward[indexEnemy];
+        window.alert(player.name + " killed " + enemyName + "!");
+        window.alert(player.name + " Won and gained " + enemysReward[indexEnemy] + " dollars!");
+        player.money = player.money + enemysReward[indexEnemy];
         indexEnemy = indexEnemy + 1;
         enemyName = enemysName[indexEnemy];
         enemyAttack = enemysAttack[indexEnemy];
@@ -70,19 +91,19 @@ function fight(playerName) {
     }
 
     else {
-        window.alert(playerName + " attacked " + enemyName + " and delt " + damagePlayer + " damage. " + enemyName + " now has " + enemyHealth + " health left. You gained $" + (enemysReward[indexEnemy] / 10));
-        playerMoney = playerMoney + (enemysReward[indexEnemy] / 10);
+        window.alert(player.name + " attacked " + enemyName + " and delt " + damagePlayer + " damage. " + enemyName + " now has " + enemyHealth + " health left. You gained $" + (enemysReward[indexEnemy] / 10));
+        player.money = player.money + (enemysReward[indexEnemy] / 10);
         var damageEnemy = randomBetween(7, enemyAttack);
-        playerHealth = Math.max(0, playerHealth - damageEnemy);
+        player.health = Math.max(0, player.health - damageEnemy);
 
-        if (playerHealth <= 0) {
-            window.alert(enemyName + " killed " + playerName + "!");
+        if (player.health <= 0) {
+            window.alert(enemyName + " killed " + player.name + "!");
             window.alert("Game Over");
             return finish = true;
         }
 
         else {
-            window.alert(enemyName + " attacked " + playerName + " and delt " + damageEnemy + " damage. " +  playerName + " now has " + playerHealth + " health left.");
+            window.alert(enemyName + " attacked " + player.name + " and delt " + damageEnemy + " damage. " +  player.name + " now has " + player.health + " health left.");
         }
     }
     hasFought = hasFought + 1;
@@ -92,15 +113,15 @@ function skip() {
     var promptFight = window.prompt("Would you like to FIGHT or SKIP this round? Enter 'FIGHT' or 'SKIP' to chose.");
         promptFight = promptFight.toUpperCase().trim();
     if (promptFight === "SKIP") {
-        var skip = window.confirm("If you skip this round  you will lose 2 dollars. You currently have $" + playerMoney + ". Do you still want to skip? YES or NO?");
+        var skip = window.confirm("If you skip this round  you will lose 2 dollars. You currently have $" + player.money + ". Do you still want to skip? YES or NO?");
         if (skip) {
-            if ((playerMoney - 2) < 0) {
+            if ((player.money - 2) < 0) {
                 window.alert("You do not have enough money to skip you must attack.")
                 return "Fight";
             }
             else {
                 window.alert("You have skiped the round and lost 2 dollars");
-                playerMoney = playerMoney - 2;
+                player.money = player.money - 2;
                 return "Store";
             }
         }
@@ -124,15 +145,15 @@ function store_or_heal() {
         store = store.toUpperCase().trim();
         if (store === "HEAL") {
             if (hasFought >= 2) {
-                var playerHealthTemp = playerHealth + (playerBaseHealth * .25);
+                var playerHealthTemp = player.health + (player.baseHealth * .25);
                 hasFought = 0;
-                if (playerHealthTemp > playerBaseHealth) {
-                    playerHealth = playerBaseHealth;
+                if (player.healthTemp > player.baseHealth) {
+                    player.health = player.baseHealth;
                 }
                 else {
-                    playerHealth = playerHealthTemp;
+                    player.health = player.healthTemp;
                 }
-                window.alert(playerName + "'s health is now " + playerHealth + "!");
+                window.alert(player.name + "'s health is now " + player.health + "!");
             }
             else {
                 window.alert("You can only heal after fighting at least 2 times, and you can not heal back to back.");
@@ -141,20 +162,19 @@ function store_or_heal() {
 
         else if (store === "SHOP") {
             while (true) {
-                window.alert("You currently have $" + playerMoney + ".");
+                window.alert("You currently have $" + player.money + ".");
                 var item = window.prompt("What would like to buy? Increase Max Health (IMH) $20, Increase Attack Damage (AD) $15, or Heal 20 Damage (H) $10? Please enter either IMH, AD, H or E to exit the store.");
                 item = item.toUpperCase().trim();
 
                 if (item === "IMH") {
                     var confirmBuy = confirmPurchase(20, "Increase Max Health");
                     if (confirmBuy) {
-                        if ((playerMoney - 20) < 0) {
+                        if ((player.money - 20) < 0) {
                             window.alert("You Dont have enough money to buy this.");
                         }
                         else {
-                            playerMoney = playerMoney - 20;
-                            playerBaseHealth = playerBaseHealth + 20;
-                            window.alert("Your max health is now " + playerBaseHealth + " and you now have " + playerMoney + " dollars left.");
+                            player.baseHealthPlus();
+                            window.alert("Your max health is now " + player.baseHealth + " and you now have " + player.money + " dollars left.");
                         }
                     }
                     else {
@@ -165,13 +185,12 @@ function store_or_heal() {
                 else if (item === "AD") {
                     var confirmBuy = confirmPurchase(15, "Increase Attack Damage");
                     if (confirmBuy) {
-                        if ((playerMoney - 15) < 0) {
+                        if ((player.money - 15) < 0) {
                             window.alert("You Dont have enough money to buy this.");
                         }
                         else {
-                            playerMoney = playerMoney - 15;
-                            playerAttack = playerAttack + 5;
-                            window.alert("Your base attack damage is now " + (playerAttack + 3)+ " and you now have " + playerMoney + " dollars left.");
+                            player.attackPlus();
+                            window.alert("Your base attack damage is now " + (player.attack + 3)+ " and you now have " + player.money + " dollars left.");
                         }
                     } 
                 }
@@ -179,21 +198,21 @@ function store_or_heal() {
                 else if (item === "H") {
                     var confirmBuy = confirmPurchase(10, "Increase Health by 20");
                     if (confirmBuy) {
-                        if ((playerMoney - 10) < 0) {
+                        if ((player.money - 10) < 0) {
                             window.alert("You Dont have enough money to buy this.");
                         }
-                        else if (playerHealth === playerBaseHealth) {
+                        else if (player.health === player.baseHealth) {
                             window.alert("Your Health is already at its max! Please purchase more health to heal more.");
                         }
                         else {
-                            playerMoney = playerMoney - 10;
-                            if ((playerHealth + 20) > playerBaseHealth) {
-                                playerHealth = playerBaseHealth;
+                            player.money = player.money - 10;
+                            if ((player.health + 20) > player.baseHealth) {
+                                player.health = player.baseHealth;
                             }
                             else {
-                                playerHealth = playerHealth + 20;
+                                player.heal();
                             }
-                            window.alert("Your health is now " + playerHealth + " and you now have " + playerMoney + " dollars left.");
+                            window.alert("Your health is now " + player.health + " and you now have " + player.money + " dollars left.");
                         }
                     } 
                 }
@@ -209,7 +228,7 @@ function store_or_heal() {
         }
 
         else if (store === "EXIT") {
-            fight(playerName);
+            fight();
             break;
         }
 
@@ -237,12 +256,10 @@ while (true) {
     }
 
     else if (start_Game) {
-        var playerName = start_game();
+        start_game();
+        console.log(player.name);
         start_Game = false;
-        playerHealth = 100;
-        playerBaseHealth = 100;
-        playerAttack = 7;
-        playerMoney = 10;
+        player.reset();
 
         indexEnemy = 0;
         enemyName = enemysName[indexEnemy];
@@ -257,7 +274,7 @@ while (true) {
     else {
         var fightOrFlight = skip();
         if (fightOrFlight === "Fight") {
-            fight(playerName);
+            fight();
         }
         else if (fightOrFlight === "Store") {
             store_or_heal();
