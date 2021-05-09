@@ -49,8 +49,18 @@ function randomBetween(a, b) {
 
 function start_game() {
     window.alert("Welcome to Robot Gladiators!");
-    player.name = window.prompt("What is your robot's name?");
-    
+    while (true) {
+        player.name = window.prompt("What is your robot's name?");
+        if (player.name === "") {
+            window.alert("Invalid name, can not be blank");
+        }
+        else if (player.name === "null") {
+            window.alert("You must enter a player name!");
+        }
+        else {
+            break;
+        }
+    }
     return player.name;
 }
 
