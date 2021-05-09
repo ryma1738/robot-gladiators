@@ -12,6 +12,7 @@ var player = {
         this.baseHealth = 100;
         this.money = 10;
         this.attack = 7;
+        this.totalDamage = 0;
     },
     attackPlus: function() {
         this.money -= 15;
@@ -65,7 +66,22 @@ function start_game() {
 }
 
 function end_game() {
-    window.alert("Your final stats were: Health: " + player.health + " Base Attack: " + (player.attack + 3) + " Total Money: " + player.money + " Total Attack Damage: " + player.totalDamage + ".");
+    var score = ((player.totalDamage * 10) + (player.attack * 10) + (player.money * 5) + ((player.health - player.baseHealth) * 10));
+    window.alert("Your final stats were: Health: " + player.health + ", Base Attack: " + (player.attack + 3) + ", Total Money: " + player.money + ", Total Attack Damage: " + player.totalDamage + ", with a score of: " + score + ".");
+    
+    var highScore = localStorage.getItem("highScore");
+    if (highScore === null) {
+        hightScore = 0;
+    }
+    if (score > highScore) {
+        window.alert("Congragulations! You got the new Hight Score of " + score + "!");
+        localStorage.setItem("highScore", score);
+        localStorage.setItem("player", player.name);
+    }
+    else {
+        window.alert("You did not beat the high score of " + highScore + " set by " + localStorage.getItem("player") + ". Your score: " + score);
+    }
+
     var again = window.confirm("Thank you for playing! Would you like to play again?");
     if (again) {
         return start_Game = true;
@@ -104,6 +120,7 @@ function fight() {
                 enemyAttack = enemysAttack[indexEnemy];
                 enemyHealth = enemysHealth[indexEnemy];
                 newRound = true;
+                i = 3;
             }
 
             else {
@@ -170,11 +187,11 @@ function store_or_heal() {
             if (hasFought >= 2) {
                 var playerHealthTemp = player.health + (player.baseHealth * .25);
                 hasFought = 0;
-                if (player.healthTemp > player.baseHealth) {
+                if (playerHealthTemp > player.baseHealth) {
                     player.health = player.baseHealth;
                 }
                 else {
-                    player.health = player.healthTemp;
+                    player.health = playerHealthTemp;
                 }
                 window.alert(player.name + "'s health is now " + player.health + "!");
             }
@@ -228,7 +245,6 @@ function store_or_heal() {
                             window.alert("Your Health is already at its max! Please purchase more health to heal more.");
                         }
                         else {
-                            player.money = player.money - 10;
                             if ((player.health + 20) > player.baseHealth) {
                                 player.health = player.baseHealth;
                             }
@@ -247,6 +263,7 @@ function store_or_heal() {
                 else {
                     
                 }
+                player.money = Math.max(0, player.money);
             }
         }
 
